@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  player    Player?
+  purchases PurchaseTx[]
+}
+
+model Player {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  level Int @default(1)
+
+  // ⚠️ Legacy (tu peux garder, mais ne sert plus à payer via Phantom)
+  balance Float @default(0)
+
+  // Pending global (FarmCard)
+  pendingBalance Float @default(0)
+
+  character         String?
+  characterUnlocked Boolean @default(false)
+
+  // Wallet Phantom lié (optionnel)
+  solanaWallet    String?
+  unlockSignature String?
+  unlockedAt      DateTime?
+
+  lastClaimedAt DateTime @default(now())
+  lastDecayAt   DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items PlayerItem[]
+
+  @@index([userId])
+}
+
+model Item {
+  id       String     @id @default(cuid())
+  name     String     @unique
+  rarity   ItemRarity
+  baseRate Float
+  maxHp    Int        @default(100)
+
+  // ✅ Nouveau: identifiant stable de la rune
+  // Exemples: IGNIVAR, CRYSALITH, VOLTARYN, UMBRYSS, SOLARIS, SYLVARIS
+  // Sert à construire l'URL: /img/runes/<runeType.toLowerCase()>.png
+  runeType String?
+
+  owners PlayerItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([rarity])
+  @@index([runeType])
+  @@index([rarity, runeType])
+}
+
+model PlayerItem {
+  id       String @id @default(cuid())
+  playerId String
+  itemId   String
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  item   Item   @relation(fields: [itemId], references: [id])
+
+  hp       Int     @default(100)
+  equipped Boolean @default(false)
+
+  // Pending gagné par item (calcul côté serveur)
+  pendingEarned Float @default(0)
+
+  lastItemDecayAt DateTime @default(now())
+  decayCarrySec   Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([playerId, equipped])
+  @@index([itemId])
+}
+
+enum ItemRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+model PurchaseTx {
+  id String @id @default(cuid())
+
+  signature   String @unique
+  payerWallet String
+  kind        String
+  chest       String?
+
+  amountMac Float
+  mint      String?
+
+  amountRaw String   // ✅ au lieu de BigInt
+  amountUi  Float?
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, kind])
+  @@index([payerWallet])
+  @@index([createdAt])
+}

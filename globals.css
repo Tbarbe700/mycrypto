@@ -1,0 +1,406 @@
+/* =========================================================
+   Tailwind v4 – Initialisation
+   (v4 = @import "tailwindcss";)
+========================================================= */
+@import "tailwindcss";
+
+/* =========================================================
+   Design Tokens – Dark Fantasy UI
+========================================================= */
+:root {
+  /* Core colors (RGB) */
+  --bg: 10 12 16;
+  --panel: 18 22 28;
+  --text: 235 238 245;
+  --muted: 160 168 180;
+
+  /* Accents (RGB) */
+  --gold: 214 176 112;
+  --ember: 255 122 46;
+  --ice: 73 195 255;
+
+  /* FX */
+  --stroke: 255 255 255;
+  --radius: 18px;
+}
+
+/* =========================================================
+   Base styles / Reset
+========================================================= */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--text));
+
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* =========================================================
+   Global background (1 seule image, sans fondu/overlay)
+   Utilise: className="min-h-screen bg-hero" sur ton wrapper
+========================================================= */
+.bg-hero {
+  background-image: url("/img/hero-dragon.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* =========================================================
+   Accessibilité
+========================================================= */
+:focus-visible {
+  outline: 2px solid rgba(255, 122, 46, 0.55);
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   Components – DRAKRUN
+========================================================= */
+@layer components {
+   /* ====== ORNATE CARDS (Drakrun) ====== */
+  .drak-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+    padding: 22px;
+    min-height: 520px;
+
+    /* Glass / dark stone */
+    background:
+      linear-gradient(to bottom, rgba(10,12,16,0.70), rgba(10,12,16,0.40)),
+      rgba(18,22,28,0.35);
+
+    backdrop-filter: blur(10px);
+
+    /* Outer frame */
+    border: 1px solid rgba(214,176,112,0.22);
+    box-shadow:
+      0 18px 60px rgba(0,0,0,0.55),
+      inset 0 0 0 1px rgba(255,255,255,0.06);
+  }
+
+  /* Double frame like the reference */
+  .drak-card::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.16);
+    box-shadow:
+      inset 0 0 0 1px rgba(0,0,0,0.55),
+      0 0 0 1px rgba(255,255,255,0.04);
+    pointer-events: none;
+  }
+
+  .drak-card::after {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(214,176,112,0.18);
+    pointer-events: none;
+    opacity: 0.85;
+  }
+
+  /* Accent glows (ember / ice) */
+  .drak-card--ember {
+    box-shadow:
+      0 18px 60px rgba(0,0,0,0.55),
+      0 0 80px rgba(255,122,46,0.16),
+      inset 0 0 0 1px rgba(255,255,255,0.06);
+  }
+
+  .drak-card--ice {
+    box-shadow:
+      0 18px 60px rgba(0,0,0,0.55),
+      0 0 80px rgba(73,195,255,0.16),
+      inset 0 0 0 1px rgba(255,255,255,0.06);
+  }
+
+  /* Top gem */
+  .drak-card__gem {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    width: 28px;
+    height: 28px;
+    transform: translateX(-50%) rotate(45deg);
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), transparent 55%),
+      linear-gradient(to bottom, rgba(214,176,112,0.85), rgba(80,28,12,0.85));
+    box-shadow:
+      0 10px 24px rgba(0,0,0,0.55),
+      0 0 26px rgba(255,122,46,0.25);
+    pointer-events: none;
+  }
+
+  /* Media area */
+  .drak-card__media {
+    position: relative;
+    height: 190px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 8px;
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow:
+      inset 0 0 0 1px rgba(0,0,0,0.55),
+      0 18px 40px rgba(0,0,0,0.45);
+  }
+
+  .drak-card__img {
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(1.1) contrast(1.05);
+    transform: scale(1.02);
+  }
+
+  /* Slight vignette on media like the reference */
+  .drak-card__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(255,255,255,0.08), transparent 55%),
+      radial-gradient(circle at 50% 75%, rgba(0,0,0,0.65), transparent 55%),
+      linear-gradient(to bottom, rgba(0,0,0,0.10), rgba(0,0,0,0.55));
+    pointer-events: none;
+  }
+
+  /* Typography (gold serif feeling without importing fonts) */
+  .drak-card__title {
+    margin-top: 18px;
+    font-size: 22px;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    color: rgba(214,176,112,0.95);
+    text-shadow: 0 2px 14px rgba(0,0,0,0.65);
+  }
+
+  .drak-card__desc {
+    margin-top: 10px;
+    color: rgba(235,238,245,0.72);
+    line-height: 1.55;
+  }
+
+  /* Mid card CTA looks like embedded plate */
+  .drak-card__cta {
+    display: inline-flex;
+    padding: 0.60rem 1.15rem;
+    border-radius: 0.95rem;
+  }
+
+  /* Bottom ornament if no CTA */
+  .drak-card__ornament {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    width: 70%;
+    height: 10px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(214,176,112,0.35),
+      rgba(255,255,255,0.10),
+      rgba(214,176,112,0.35),
+      transparent
+    );
+    opacity: 0.75;
+    pointer-events: none;
+  }
+}
+
+  .btn-drakrun {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.85rem;
+
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: rgb(var(--text));
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+
+    background: radial-gradient(
+        circle at 30% 35%,
+        rgba(255, 122, 46, 0.35),
+        transparent 55%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(255, 140, 60, 0.38),
+        rgba(80, 28, 12, 0.85)
+      ),
+      rgba(18, 22, 28, 0.6);
+
+    border: 1px solid rgba(214, 176, 112, 0.55);
+
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+      inset 0 -6px 12px rgba(0, 0, 0, 0.55),
+      0 0 28px rgba(255, 122, 46, 0.22);
+
+    backdrop-filter: blur(8px);
+
+    transition: transform 150ms ease, filter 150ms ease, box-shadow 150ms ease;
+  }
+
+  .btn-drakrun::before {
+    content: "";
+    position: absolute;
+    inset: 0.28rem;
+    border-radius: 0.65rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+  }
+
+  .btn-drakrun::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.14),
+      transparent 55%
+    );
+    pointer-events: none;
+  }
+
+  .btn-drakrun:hover {
+    filter: brightness(1.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+      inset 0 -6px 12px rgba(0, 0, 0, 0.45),
+      0 0 36px rgba(255, 122, 46, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .btn-drakrun:active {
+    transform: translateY(0);
+    filter: brightness(0.95);
+  }
+
+  .btn-drakrun:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    filter: none;
+    transform: none;
+  }
+
+  /* Variante secondaire */
+  .btn-drakrun--secondary {
+    background: radial-gradient(
+        circle at 30% 35%,
+        rgba(255, 255, 255, 0.08),
+        transparent 55%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(30, 35, 45, 0.65),
+        rgba(10, 12, 16, 0.95)
+      );
+
+    border-color: rgba(255, 255, 255, 0.22);
+
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+      inset 0 -6px 12px rgba(0, 0, 0, 0.55),
+      0 0 18px rgba(0, 0, 0, 0.45);
+  }
+
+/* =========================================================
+   Utilities custom
+========================================================= */
+@layer utilities {
+  .text-muted {
+    color: rgb(var(--muted));
+  }
+
+  .rune-frame-fit {
+    transform: scale(1.14) translateY(-2px);
+    transform-origin: center;
+  }
+
+  .bg-panel {
+    background-color: rgba(18, 22, 28, 0.6);
+    backdrop-filter: blur(8px);
+  }
+
+  .border-stroke {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .glow-ember {
+    box-shadow: 0 0 24px rgba(255, 122, 46, 0.25);
+  }
+
+  .glow-ice {
+    box-shadow: 0 0 24px rgba(73, 195, 255, 0.2);
+  }
+
+  .frame-fantasy {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+      0 0 36px rgba(255, 122, 46, 0.1);
+    background: rgba(18, 22, 28, 0.55);
+    backdrop-filter: blur(10px);
+  }
+
+  .hairline {
+    border: 1px solid rgba(255, 255, 255, 0.10);
+  }
+}
+
+/* =========================================================
+   Scrollbar (WebKit)
+========================================================= */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
